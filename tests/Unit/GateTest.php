@@ -7,22 +7,22 @@ use App\ValueObjects\ComposerPlan;
 
 function gateProject(bool $trustFile, bool $binary): Gate
 {
-    $root = sys_get_temp_dir().'/porto-'.bin2hex(random_bytes(6));
+    $root = sys_get_temp_dir().'/vet-'.bin2hex(random_bytes(6));
     $binDir = $root.'/vendor/bin';
 
     mkdir($binDir, 0o777, true);
 
     if ($trustFile) {
-        file_put_contents($root.'/porto.json', '{"schema":3}');
+        file_put_contents($root.'/vet.json', '{"schema":3}');
     }
 
     if ($binary) {
-        file_put_contents($binDir.'/porto', "#!/usr/bin/env php\n");
+        file_put_contents($binDir.'/vet', "#!/usr/bin/env php\n");
     }
 
     register_shutdown_function(static function () use ($root): void {
-        @unlink($root.'/porto.json');
-        @unlink($root.'/vendor/bin/porto');
+        @unlink($root.'/vet.json');
+        @unlink($root.'/vendor/bin/vet');
         @rmdir($root.'/vendor/bin');
         @rmdir($root.'/vendor');
         @rmdir($root);
@@ -34,7 +34,7 @@ function gateProject(bool $trustFile, bool $binary): Gate
 it('runs the audit in color when the project holds a trust file and the binary', function (): void {
     $gate = gateProject(trustFile: true, binary: true);
 
-    expect($gate->command())->toBe([PHP_BINARY, $gate->rootPath.'/vendor/bin/porto', 'audit', '--ansi'])
+    expect($gate->command())->toBe([PHP_BINARY, $gate->rootPath.'/vendor/bin/vet', 'audit', '--ansi'])
         ->and($gate->baselineNotice())->toBeNull();
 });
 
@@ -42,7 +42,7 @@ it('passes the verbosity of composer to the audit', function (): void {
     $gate = gateProject(trustFile: true, binary: true);
 
     expect($gate->command(verbose: true))
-        ->toBe([PHP_BINARY, $gate->rootPath.'/vendor/bin/porto', 'audit', '--ansi', '-v']);
+        ->toBe([PHP_BINARY, $gate->rootPath.'/vendor/bin/vet', 'audit', '--ansi', '-v']);
 });
 
 it('tells the audit that composer runs it', function (): void {
@@ -54,7 +54,7 @@ it('asks for a baseline rather than fail a project that holds no trust file', fu
     $gate = gateProject(trustFile: false, binary: true);
 
     expect($gate->command())->toBeNull()
-        ->and($gate->baselineNotice())->toContain('porto trust');
+        ->and($gate->baselineNotice())->toContain('vet trust');
 });
 
 it('does nothing when the binary is gone', function (): void {
@@ -65,10 +65,10 @@ it('does nothing when the binary is gone', function (): void {
         ->and($gate->baselineNotice())->toBeNull();
 });
 
-it('reads the binary of the repository of porto itself', function (): void {
+it('reads the binary of the repository of vet itself', function (): void {
     $root = dirname(__DIR__, 2);
 
-    expect((new Gate($root, $root.'/vendor/bin'))->binary())->toBe($root.'/porto');
+    expect((new Gate($root, $root.'/vendor/bin'))->binary())->toBe($root.'/vet');
 });
 
 it('gives the audit the plan that composer holds', function (): void {
@@ -85,7 +85,7 @@ it('gives the audit the plan that composer holds', function (): void {
 
     expect($path)->toBeString()
         ->and($gate->command(verbose: false, planPath: $path))
-        ->toBe([PHP_BINARY, $gate->rootPath.'/vendor/bin/porto', 'audit', '--ansi', '--plan='.$path]);
+        ->toBe([PHP_BINARY, $gate->rootPath.'/vendor/bin/vet', 'audit', '--ansi', '--plan='.$path]);
 
     $plan = ComposerPlan::fromFile((string) $path);
 
@@ -117,7 +117,7 @@ it('reads whether the project installs a tree today', function (): void {
     }
 });
 
-it('knows that it runs inside a composer that porto started', function (): void {
+it('knows that it runs inside a composer that vet started', function (): void {
     $gate = gateProject(trustFile: true, binary: true);
 
     putenv(Gate::ENVIRONMENT.'=1');

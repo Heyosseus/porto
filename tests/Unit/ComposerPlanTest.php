@@ -60,7 +60,7 @@ it('drops the reference of a branch version', function (): void {
 });
 
 it('reads the operations that composer wrote to a plan file', function (): void {
-    $path = sys_get_temp_dir().'/porto-plan-'.bin2hex(random_bytes(6)).'.json';
+    $path = sys_get_temp_dir().'/vet-plan-'.bin2hex(random_bytes(6)).'.json';
 
     file_put_contents($path, json_encode(['operations' => [
         [

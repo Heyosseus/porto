@@ -26,13 +26,13 @@ final readonly class Fixture
             throw new RuntimeException(sprintf('The fixture [%s] holds no project directory.', $name));
         }
 
-        $base = sys_get_temp_dir().'/porto-'.bin2hex(random_bytes(6));
+        $base = sys_get_temp_dir().'/vet-'.bin2hex(random_bytes(6));
 
         $fixture = new self($base.'/project', $base.'/cache');
 
         self::copy($source.'/project', $fixture->rootPath);
 
-        putenv('PORTO_CACHE_DIR='.$fixture->cachePath);
+        putenv('VET_CACHE_DIR='.$fixture->cachePath);
 
         $fixture->seedMetadata($source.'/packagist');
         $fixture->seedReleases($source.'/releases');
@@ -65,13 +65,13 @@ final readonly class Fixture
 
         chmod($binary, 0o755);
 
-        putenv('PORTO_COMPOSER_BINARY='.$binary);
+        putenv('VET_COMPOSER_BINARY='.$binary);
     }
 
     public function remove(): void
     {
-        putenv('PORTO_CACHE_DIR');
-        putenv('PORTO_COMPOSER_BINARY');
+        putenv('VET_CACHE_DIR');
+        putenv('VET_COMPOSER_BINARY');
 
         $this->delete(dirname($this->rootPath));
     }

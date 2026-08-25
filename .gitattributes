@@ -1,6 +1,6 @@
 * text=auto eol=lf
 tests/Fixtures/** -text
-builds/porto -text
+builds/vet -text
 
 /.editorconfig export-ignore
 /.gitattributes export-ignore
@@ -22,9 +22,9 @@ builds/porto -text
 /phpstan.neon.dist export-ignore
 /phpunit.xml.dist export-ignore
 /pint.json export-ignore
-/porto export-ignore
-/porto.json export-ignore
 /README.md export-ignore
 /rector.php export-ignore
 /tests export-ignore
 /TODO.md export-ignore
+/vet export-ignore
+/vet.json export-ignore

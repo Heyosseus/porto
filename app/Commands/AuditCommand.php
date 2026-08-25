@@ -8,7 +8,7 @@ use App\Actions\AuditProject;
 use App\Actions\RenderDelta;
 use App\Actions\ResolveDelta;
 use App\Enums\AuditStatus;
-use App\Exceptions\PortoException;
+use App\Exceptions\VetException;
 use App\Support\Bytes;
 use App\Support\Invitation;
 use App\Support\Json;
@@ -46,8 +46,8 @@ final class AuditCommand extends Command
         try {
             $project = Project::locate($path ?? (string) getcwd());
             $this->bucketOption();
-        } catch (PortoException $portoException) {
-            $this->components->error($portoException->getMessage());
+        } catch (VetException $vetException) {
+            $this->components->error($vetException->getMessage());
 
             return self::FAILURE;
         }
@@ -107,8 +107,8 @@ final class AuditCommand extends Command
 
             $discrepancies = $auditor->lockDiscrepancies();
             $report = $auditor->report();
-        } catch (PortoException $portoException) {
-            $this->components->error($portoException->getMessage());
+        } catch (VetException $vetException) {
+            $this->components->error($vetException->getMessage());
 
             return self::FAILURE;
         }
@@ -173,7 +173,7 @@ final class AuditCommand extends Command
 
         if (! $auditor->trustFile->exists()) {
             $this->components->warn(sprintf(
-                'No trust file yet. `porto trust` records every installed package in %s.',
+                'No trust file yet. `vet trust` records every installed package in %s.',
                 $this->relative($project->rootPath, $auditor->trustFile->path),
             ));
             $this->newLine();
@@ -233,11 +233,11 @@ final class AuditCommand extends Command
         $this->newLine();
 
         $this->components->error($this->output->isVerbose()
-            ? sprintf('%d package(s) are not covered. Record them with `porto trust`.', count($failing))
+            ? sprintf('%d package(s) are not covered. Record them with `vet trust`.', count($failing))
             : sprintf(
-                '%d package(s) are not covered. Read every change with `%s`, then record them with `porto trust`.',
+                '%d package(s) are not covered. Read every change with `%s`, then record them with `vet trust`.',
                 count($failing),
-                Invitation::verbose('porto audit -v'),
+                Invitation::verbose('vet audit -v'),
             ));
 
         if ($this->holdsPending($failing)) {
@@ -261,8 +261,8 @@ final class AuditCommand extends Command
         try {
             $auditor = AuditProject::forProject($project, $this->plan(), $this->option('no-cache') !== true);
             $audit = $auditor->auditOfName($package);
-        } catch (PortoException $portoException) {
-            $this->components->error($portoException->getMessage());
+        } catch (VetException $vetException) {
+            $this->components->error($vetException->getMessage());
 
             return self::FAILURE;
         }
@@ -275,7 +275,7 @@ final class AuditCommand extends Command
 
         if ($audit->status === AuditStatus::Unknown) {
             $this->newLine();
-            $this->components->error($audit->cause ?? 'porto cannot read those bytes.');
+            $this->components->error($audit->cause ?? 'vet cannot read those bytes.');
 
             return self::FAILURE;
         }
@@ -295,9 +295,9 @@ final class AuditCommand extends Command
                     to: $to ?? ($audit->pending() ? $audit->version : null),
                     useCache: $this->option('no-cache') !== true,
                 );
-            } catch (PortoException $portoException) {
+            } catch (VetException $vetException) {
                 if ($requested) {
-                    $this->components->error($portoException->getMessage());
+                    $this->components->error($vetException->getMessage());
 
                     return self::FAILURE;
                 }
@@ -305,7 +305,7 @@ final class AuditCommand extends Command
                 $unresolved = sprintf(
                     'Could not build the delta from the granted %s: %s',
                     $from,
-                    $portoException->getMessage(),
+                    $vetException->getMessage(),
                 );
             }
         }
@@ -365,7 +365,7 @@ final class AuditCommand extends Command
         }
 
         if (! $covered) {
-            $this->components->info(sprintf('Record these bytes with `porto trust %s`.', $audit->package));
+            $this->components->info(sprintf('Record these bytes with `vet trust %s`.', $audit->package));
         }
 
         return $covered ? self::SUCCESS : self::FAILURE;
@@ -392,7 +392,7 @@ final class AuditCommand extends Command
 
         try {
             $delta = ResolveDelta::forProject($project)->resolve($audit->package, $from);
-        } catch (PortoException) {
+        } catch (VetException) {
             return $this->wholePackage($audit);
         }
 
@@ -435,7 +435,7 @@ final class AuditCommand extends Command
                 installed: $installed->has($audit->package) ? $installed->get($audit->package) : null,
                 useCache: $this->option('no-cache') !== true,
             );
-        } catch (PortoException) {
+        } catch (VetException) {
             return null;
         }
     }

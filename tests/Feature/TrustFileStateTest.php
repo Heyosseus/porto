@@ -18,7 +18,7 @@ it('tells the user what to do with a trust file of an older schema', function ()
     expect($status)->toBe(1)
         ->and($output)
         ->toContain('declares schema 2')
-        ->toContain('Delete the file and run `porto trust` again.');
+        ->toContain('Delete the file and run `vet trust` again.');
 });
 
 it('names the entry that holds no hash', function (): void {
@@ -54,7 +54,7 @@ it('keeps the notes of an entry that the user records again', function (): void 
 
     try {
         $status = Artisan::call('trust', ['packages' => ['acme/widget'], '--path' => $fixture->rootPath]);
-        $trustFile = $fixture->read('porto.json');
+        $trustFile = $fixture->read('vet.json');
     } finally {
         $fixture->remove();
     }
@@ -74,7 +74,7 @@ it('replaces the notes of an entry when the user gives --notes', function (): vo
             '--notes' => 'Read the phar too.',
             '--path' => $fixture->rootPath,
         ]);
-        $trustFile = $fixture->read('porto.json');
+        $trustFile = $fixture->read('vet.json');
     } finally {
         $fixture->remove();
     }
@@ -91,7 +91,7 @@ it('writes the dev package of a baseline in require-dev', function (): void {
         $status = Artisan::call('trust', ['--path' => $fixture->rootPath]);
 
         /** @var array{require: array<string, mixed>, require-dev: array<string, mixed>} $trustFile */
-        $trustFile = json_decode($fixture->read('porto.json'), true);
+        $trustFile = json_decode($fixture->read('vet.json'), true);
     } finally {
         $fixture->remove();
     }

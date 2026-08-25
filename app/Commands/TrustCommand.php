@@ -9,7 +9,7 @@ use App\Actions\RenderDelta;
 use App\Actions\ResolveDelta;
 use App\Enums\AuditStatus;
 use App\Exceptions\FailureException;
-use App\Exceptions\PortoException;
+use App\Exceptions\VetException;
 use App\ValueObjects\ComposerOperation;
 use App\ValueObjects\Delta;
 use App\ValueObjects\Grant;
@@ -41,8 +41,8 @@ final class TrustCommand extends Command
         try {
             $project = Project::locate($path ?? (string) getcwd());
             $auditor = AuditProject::forProject($project);
-        } catch (PortoException $portoException) {
-            $this->components->error($portoException->getMessage());
+        } catch (VetException $vetException) {
+            $this->components->error($vetException->getMessage());
 
             return self::FAILURE;
         }
@@ -57,15 +57,15 @@ final class TrustCommand extends Command
     private function trustProject(Project $project, AuditProject $auditor): int
     {
         if ($this->option('from') !== null) {
-            $this->components->error('The --from option needs one package. Run `porto trust <package>`.');
+            $this->components->error('The --from option needs one package. Run `vet trust <package>`.');
 
             return self::FAILURE;
         }
 
         try {
             $report = $auditor->report();
-        } catch (PortoException $portoException) {
-            $this->components->error($portoException->getMessage());
+        } catch (VetException $vetException) {
+            $this->components->error($vetException->getMessage());
 
             return self::FAILURE;
         }
@@ -93,8 +93,8 @@ final class TrustCommand extends Command
             }
 
             $auditor->trustFile->save();
-        } catch (PortoException $portoException) {
-            $this->components->error($portoException->getMessage());
+        } catch (VetException $vetException) {
+            $this->components->error($vetException->getMessage());
 
             return self::FAILURE;
         }
@@ -149,7 +149,7 @@ final class TrustCommand extends Command
     private function trustPackages(Project $project, AuditProject $auditor, array $names): int
     {
         if (count($names) > 1 && $this->option('from') !== null) {
-            $this->components->error('The --from option needs one package. Run `porto trust <package> --from=<version>`.');
+            $this->components->error('The --from option needs one package. Run `vet trust <package> --from=<version>`.');
 
             return self::FAILURE;
         }
@@ -159,15 +159,15 @@ final class TrustCommand extends Command
         foreach ($names as $name) {
             try {
                 $audit = $auditor->auditOfName($name);
-            } catch (PortoException $portoException) {
-                $this->components->error($portoException->getMessage());
+            } catch (VetException $vetException) {
+                $this->components->error($vetException->getMessage());
 
                 return self::FAILURE;
             }
 
             if ($audit->status === AuditStatus::Unknown) {
                 $this->newLine();
-                $this->components->error($audit->cause ?? 'porto cannot read those bytes.');
+                $this->components->error($audit->cause ?? 'vet cannot read those bytes.');
 
                 return self::FAILURE;
             }
@@ -208,8 +208,8 @@ final class TrustCommand extends Command
 
         try {
             $auditor->trustFile->save();
-        } catch (PortoException $portoException) {
-            $this->components->error($portoException->getMessage());
+        } catch (VetException $vetException) {
+            $this->components->error($vetException->getMessage());
 
             return self::FAILURE;
         }
@@ -285,8 +285,8 @@ final class TrustCommand extends Command
                 from: $from,
                 to: $audit->pending() ? $audit->version : null,
             );
-        } catch (PortoException $portoException) {
-            $this->components->warn(sprintf('Could not build a delta from %s: %s', $from, $portoException->getMessage()));
+        } catch (VetException $vetException) {
+            $this->components->warn(sprintf('Could not build a delta from %s: %s', $from, $vetException->getMessage()));
 
             return null;
         }
@@ -307,8 +307,8 @@ final class TrustCommand extends Command
                 target: $auditor->target($operation, $audit->version, $audit->dev),
                 installed: $installed->has($audit->package) ? $installed->get($audit->package) : null,
             );
-        } catch (PortoException $portoException) {
-            $this->components->warn(sprintf('Could not build a delta: %s', $portoException->getMessage()));
+        } catch (VetException $vetException) {
+            $this->components->warn(sprintf('Could not build a delta: %s', $vetException->getMessage()));
 
             return null;
         }

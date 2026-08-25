@@ -1,7 +1,7 @@
 {
-    "name": "nunomaduro/porto",
+    "name": "laravel/vet",
     "description": "A dependency audit trust file for PHP.",
-    "keywords": ["supply chain", "audit", "composer", "security", "console", "cli"],
+    "keywords": ["php", "supply chain", "audit", "composer", "security", "console", "cli", "dev"],
     "type": "composer-plugin",
     "license": "MIT",
     "authors": [
@@ -20,8 +20,8 @@
         "laravel/pint": "^1.30.5",
         "mockery/mockery": "^1.6.15",
         "pestphp/pest": "^4.7.8",
-        "phpstan/phpstan": "^2.2.8",
-        "rector/rector": "2.6.2"
+        "phpstan/phpstan": "^2.2.9",
+        "rector/rector": "^2.6.3"
     },
     "extra": {
         "class": "App\\Composer\\Plugin"
@@ -44,7 +44,7 @@
         "sort-packages": true,
         "optimize-autoloader": true,
         "allow-plugins": {
-            "nunomaduro/porto": true,
+            "laravel/vet": true,
             "pestphp/pest-plugin": true
         }
     },
@@ -52,23 +52,21 @@
         "post-update-cmd": "@test:dependencies",
         "lint": [
             "rector process",
-            "pint"
+            "pint --parallel"
         ],
         "test:lint": [
             "rector process --dry-run",
-            "pint --test"
+            "pint --test --parallel"
         ],
-        "test:dependencies": "./porto audit",
         "test:types": "phpstan analyse",
         "test:unit": "pest --parallel",
         "test": [
             "@test:lint",
-            "@test:dependencies",
             "@test:types",
             "@test:unit"
         ]
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
-    "bin": ["builds/porto"]
+    "bin": ["builds/vet"]
 }

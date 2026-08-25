@@ -1,17 +1,9 @@
-# porto
-
-<p>
-    <a href="https://github.com/nunomaduro/porto/actions"><img src="https://github.com/nunomaduro/porto/actions/workflows/tests.yml/badge.svg" alt="Build Status"></a>
-    <a href="https://packagist.org/packages/nunomaduro/porto"><img src="https://img.shields.io/packagist/dt/nunomaduro/porto" alt="Total Downloads"></a>
-    <a href="https://packagist.org/packages/nunomaduro/porto"><img src="https://img.shields.io/packagist/v/nunomaduro/porto" alt="Latest Stable Version"></a>
-    <a href="https://packagist.org/packages/nunomaduro/porto"><img src="https://img.shields.io/packagist/l/nunomaduro/porto" alt="License"></a>
-    <a href="https://youtube.com/@nunomaduro?sub_confirmation=1"><img alt="YouTube Channel Subscribers" src="https://img.shields.io/youtube/channel/subscribers/UCO_hYZF2gb_CyG5sA7ArlGg?style=flat&label=youtube&color=brightgreen"></a>
-</p>
+# Laravel Vet
 
 <a name="introduction"></a>
 ## Introduction
 
-[porto](https://github.com/nunomaduro/porto) is a dependency audit for PHP. It shows you what a `composer update` is about to put into the `vendor/` directory, and lets you **or your agent** review those changes, one by one, before they land.
+[vet](https://github.com/laravel/vet) is a dependency audit for PHP. It shows you what a `composer update` is about to put into the `vendor/` directory, and lets you **or your agent** review those changes, one by one, before they land.
 
 ```
 ❯ composer update
@@ -47,7 +39,7 @@
 
   audited .................................................. 124 / 125 (99.2%)
 
-   ERROR  1 package(s) are not covered. Read every change with `composer update -v`, then record them with `porto trust`.
+   ERROR  1 package(s) are not covered. Read every change with `composer update -v`, then record them with `vet trust`.
 
 ```
 
@@ -56,25 +48,25 @@
 
 > **Requires [PHP 8.3+](https://php.net/releases/)**.
 
-You may install porto into your project via the Composer package manager:
+You may install vet into your project via the Composer package manager:
 
 ```shell
-composer require nunomaduro/porto --dev
+composer require laravel/vet --dev
 ```
 
-By default, porto commands are invoked using the `./vendor/bin/porto` script that is included with the package:
+By default, vet commands are invoked using the `./vendor/bin/vet` script that is included with the package:
 
 ```shell
-./vendor/bin/porto audit
+./vendor/bin/vet audit
 ```
 
 <a name="trusting-your-dependencies"></a>
 ## Trusting Your Dependencies
 
-Before porto can show you what changed, it needs to know what you trust today. The `trust` command lists every installed package with the reason it needs an entry, records the tree on disk, and writes the `porto.json` trust file:
+Before vet can show you what changed, it needs to know what you trust today. The `trust` command lists every installed package with the reason it needs an entry, records the tree on disk, and writes the `vet.json` trust file:
 
 ```shell
-porto trust
+vet trust
 ```
 
 ```
@@ -85,7 +77,7 @@ porto trust
   carbonphp/carbon-doctrine-types 3.2.0 .. no entry; this tree is ad33848c07e8
   …
 
-   INFO  Trusted 125 package(s), and wrote porto.json.
+   INFO  Trusted 125 package(s), and wrote vet.json.
 ```
 
 <a name="auditing-your-dependencies"></a>
@@ -94,7 +86,7 @@ porto trust
 Once the trust file exists, run the `audit` command whenever you want to know where you stand. It reports the packages that have no entry:
 
 ```shell
-porto audit
+vet audit
 
    INFO  All 125 packages are covered.
 
@@ -106,7 +98,7 @@ porto audit
 You may audit one package by passing its name to the `audit` command:
 
 ```shell
-porto audit symfony/console
+vet audit symfony/console
 ```
 
 ```
@@ -117,16 +109,16 @@ porto audit symfony/console
   path ................................................ vendor/symfony/console
 ```
 
-When the trust file already covers the installed version, the report stays local and instant. When the trust file holds an earlier version, porto fetches that version from Packagist and shows you the delta. If you would like to compare against some other version, you may name it using the `--from` option:
+When the trust file already covers the installed version, the report stays local and instant. When the trust file holds an earlier version, vet fetches that version from Packagist and shows you the delta. If you would like to compare against some other version, you may name it using the `--from` option:
 
 ```shell
-porto audit carbonphp/carbon-doctrine-types --from=3.1.0
+vet audit carbonphp/carbon-doctrine-types --from=3.1.0
 ```
 
 <a name="the-trust-file"></a>
 ## The Trust File
 
-The trust file lives in `porto.json`, at the root of your project, next to `composer.json`. You should commit it. It holds one entry for each package: the version you reviewed, and the hash of the tree you reviewed.
+The trust file lives in `vet.json`, at the root of your project, next to `composer.json`. You should commit it. It holds one entry for each package: the version you reviewed, and the hash of the tree you reviewed.
 
 ```json
 {
@@ -149,18 +141,20 @@ The trust file lives in `porto.json`, at the root of your project, next to `comp
 <a name="continuous-integration"></a>
 ## Continuous Integration
 
-Your build audits your dependencies the moment it installs them. porto ships a Composer plugin, and the plugin runs the audit after every `composer install`, and again before `composer update` writes anything into `vendor/`. There is no step to add.
+Your build audits your dependencies the moment it installs them. vet ships a Composer plugin, and the plugin runs the audit after every `composer install`, and again before `composer update` writes anything into `vendor/`. There is no step to add.
 
-## Follow Nuno
+## Contributing
 
-- Follow the creator Nuno Maduro:
-    - YouTube: **[youtube.com/@nunomaduro](https://youtube.com/@nunomaduro)** — Videos every week
-    - Twitch: **[twitch.tv/nunomaduro](https://twitch.tv/nunomaduro)** — Live coding on Mondays, Wednesdays, and Fridays at 9PM UTC
-    - Twitter / X: **[x.com/enunomaduro](https://x.com/enunomaduro)**
-    - LinkedIn: **[linkedin.com/in/nunomaduro](https://www.linkedin.com/in/nunomaduro)**
-    - Instagram: **[instagram.com/enunomaduro](https://www.instagram.com/enunomaduro)**
-    - Tiktok: **[tiktok.com/@enunomaduro](https://www.tiktok.com/@enunomaduro)**
+Thank you for considering contributing to Laravel! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+
+## Code of Conduct
+
+In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+
+## Security Vulnerabilities
+
+Please review [our security policy](https://github.com/laravel/vet/security/policy) on how to report security vulnerabilities.
 
 ## License
 
-**porto** was created by **[Nuno Maduro](https://twitter.com/enunomaduro)** under the **[MIT license](https://opensource.org/licenses/MIT)**.
+The Laravel AI SDK is open-sourced software licensed under the [MIT license](LICENSE.md).

@@ -6,7 +6,7 @@ namespace App\Actions;
 
 use App\Enums\AuditStatus;
 use App\Enums\PackageStatus;
-use App\Exceptions\PortoException;
+use App\Exceptions\VetException;
 use App\ValueObjects\AuditReport;
 use App\ValueObjects\ComposerOperation;
 use App\ValueObjects\ComposerPlan;
@@ -122,7 +122,7 @@ final readonly class AuditProject
         try {
             $target = $this->target($operation, $version, $dev);
             $fingerprint = $this->fingerprinter->ofIncoming($target, $this->useCache);
-        } catch (PortoException $portoException) {
+        } catch (VetException $vetException) {
             return new PackageAudit(
                 package: $operation->package,
                 version: $version,
@@ -135,9 +135,9 @@ final readonly class AuditProject
                 state: PackageStatus::Pending,
                 from: $operation->from,
                 cause: sprintf(
-                    'composer would install %s and porto cannot read those bytes: %s',
+                    'composer would install %s and vet cannot read those bytes: %s',
                     $version,
-                    $portoException->getMessage(),
+                    $vetException->getMessage(),
                 ),
             );
         }

@@ -5,3 +5,6 @@
 /.vagrant
 .phpunit.result.cache
 .phpunit.cache
+
+/.claude/skills/
+/.agents/skills/
