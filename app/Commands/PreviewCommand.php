@@ -4,20 +4,20 @@ declare(strict_types=1);
 
 namespace App\Commands;
 
-use App\ValueObjects\Delta;
-use App\Actions\ResolveDelta;
-use App\Exceptions\ComposerFailedException;
-use App\Exceptions\PortoException;
-use App\ValueObjects\TrustFile;
-use App\ValueObjects\InstalledRepository;
-use App\ValueObjects\Project;
-use App\ValueObjects\ComposerOperation;
-use App\ValueObjects\ComposerPlan;
 use App\Actions\PlanComposerUpdate;
 use App\Actions\RenderDelta;
+use App\Actions\ResolveDelta;
+use App\Exceptions\ComposerFailedException;
+use App\Exceptions\VetException;
 use App\Support\Invitation;
 use App\Support\Json;
+use App\ValueObjects\ComposerOperation;
+use App\ValueObjects\ComposerPlan;
+use App\ValueObjects\Delta;
+use App\ValueObjects\InstalledRepository;
 use App\ValueObjects\PlannedReview;
+use App\ValueObjects\Project;
+use App\ValueObjects\TrustFile;
 use Symfony\Component\Console\Formatter\OutputFormatter;
 
 final class PreviewCommand extends Command
@@ -54,8 +54,8 @@ final class PreviewCommand extends Command
             $this->newLine();
 
             return self::FAILURE;
-        } catch (PortoException $portoException) {
-            $this->components->error($portoException->getMessage());
+        } catch (VetException $vetException) {
+            $this->components->error($vetException->getMessage());
 
             return self::FAILURE;
         }
@@ -156,11 +156,11 @@ final class PreviewCommand extends Command
 
         $this->newLine();
         $this->components->info($this->output->isVerbose()
-            ? sprintf('%d package(s) change. Run `composer update`, then record them with `porto trust`.', count($reviews))
+            ? sprintf('%d package(s) change. Run `composer update`, then record them with `vet trust`.', count($reviews))
             : sprintf(
                 '%d package(s) change. Read every change with `%s`, then run `composer update`.',
                 count($reviews),
-                Invitation::verbose('porto preview -v'),
+                Invitation::verbose('vet preview -v'),
             ));
 
         return self::SUCCESS;

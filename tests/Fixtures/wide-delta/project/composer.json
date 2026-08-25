@@ -1,6 +1,6 @@
 {
     "name": "acme/app",
-    "description": "A project that porto audits.",
+    "description": "A project that vet audits.",
     "require": {
         "acme/wide": "^2.0"
     }

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Exceptions;
 
-final class InvalidJsonException extends PortoException
+final class InvalidJsonException extends VetException
 {
     public static function at(string $path, string $reason): self
     {

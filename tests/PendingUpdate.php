@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests;
 
-use App\ValueObjects\Manifest;
 use App\Support\Json;
+use App\ValueObjects\Manifest;
 use FilesystemIterator;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -44,7 +44,7 @@ final readonly class PendingUpdate
 
     public static function create(string $plan = self::PLAN, int $exitCode = 0): self
     {
-        $base = sys_get_temp_dir().'/porto-'.bin2hex(random_bytes(6));
+        $base = sys_get_temp_dir().'/vet-'.bin2hex(random_bytes(6));
 
         $project = new self($base.'/project', $base.'/cache');
 
@@ -56,7 +56,7 @@ final readonly class PendingUpdate
         $project->seedTrustFile();
         $project->seedComposer($plan, $exitCode);
 
-        putenv('PORTO_CACHE_DIR='.$project->cachePath);
+        putenv('VET_CACHE_DIR='.$project->cachePath);
 
         return $project;
     }
@@ -110,7 +110,7 @@ final readonly class PendingUpdate
 
     public function trustFile(): string
     {
-        return (string) file_get_contents($this->rootPath.'/porto.json');
+        return (string) file_get_contents($this->rootPath.'/vet.json');
     }
 
     public function installedFile(): string
@@ -120,8 +120,8 @@ final readonly class PendingUpdate
 
     public function remove(): void
     {
-        putenv('PORTO_CACHE_DIR');
-        putenv('PORTO_COMPOSER_BINARY');
+        putenv('VET_CACHE_DIR');
+        putenv('VET_COMPOSER_BINARY');
 
         $base = dirname($this->rootPath);
 
@@ -280,7 +280,7 @@ final readonly class PendingUpdate
     {
         $hash = Manifest::ofDirectory($this->releasePath(self::TRUSTED_VERSION, self::TRUSTED_REFERENCE))->hash();
 
-        $this->write($this->rootPath.'/porto.json', Json::encode([
+        $this->write($this->rootPath.'/vet.json', Json::encode([
             'schema' => 3,
             'require' => [
                 self::PACKAGE => [
@@ -300,7 +300,7 @@ final readonly class PendingUpdate
 
         chmod($path, 0o755);
 
-        putenv('PORTO_COMPOSER_BINARY='.$path);
+        putenv('VET_COMPOSER_BINARY='.$path);
     }
 
     private function write(string $path, string $contents): void

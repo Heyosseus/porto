@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Exceptions;
 
-final class PackageNotInstalledException extends PortoException
+final class PackageNotInstalledException extends VetException
 {
     public static function named(string $name): self
     {

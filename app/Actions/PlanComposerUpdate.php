@@ -19,7 +19,7 @@ final readonly class PlanComposerUpdate
 
     public static function default(): self
     {
-        $binary = getenv('PORTO_COMPOSER_BINARY');
+        $binary = getenv('VET_COMPOSER_BINARY');
 
         return new self(is_string($binary) && $binary !== '' ? $binary : 'composer');
     }

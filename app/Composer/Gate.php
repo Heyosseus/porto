@@ -6,7 +6,7 @@ namespace App\Composer;
 
 final readonly class Gate
 {
-    public const string ENVIRONMENT = 'PORTO_INSIDE_COMPOSER';
+    public const string ENVIRONMENT = 'VET_INSIDE_COMPOSER';
 
     public function __construct(
         public string $rootPath,
@@ -16,7 +16,7 @@ final readonly class Gate
 
     public function binary(): ?string
     {
-        foreach ([$this->binDir.'/porto', $this->rootPath.'/porto'] as $candidate) {
+        foreach ([$this->binDir.'/vet', $this->rootPath.'/vet'] as $candidate) {
             if (is_file($candidate)) {
                 return $candidate;
             }
@@ -27,7 +27,7 @@ final readonly class Gate
 
     public function hasTrustFile(): bool
     {
-        return is_file($this->rootPath.'/porto.json');
+        return is_file($this->rootPath.'/vet.json');
     }
 
     public function hasInstalledTree(): bool
@@ -85,7 +85,7 @@ final readonly class Gate
             return null;
         }
 
-        $path = tempnam(sys_get_temp_dir(), 'porto-plan-');
+        $path = tempnam(sys_get_temp_dir(), 'vet-plan-');
 
         if ($path === false) {
             return null;
@@ -107,7 +107,7 @@ final readonly class Gate
             return null;
         }
 
-        return 'porto has no trust file in this project yet. Run `porto trust` to record what you trust today.';
+        return 'vet has no trust file in this project yet. Run `vet trust` to record what you trust today.';
     }
 
     public function firstInstallNotice(): ?string
@@ -116,6 +116,6 @@ final readonly class Gate
             return null;
         }
 
-        return 'porto audits an update against the installed tree. This project installs no package yet, so the audit runs after this install.';
+        return 'vet audits an update against the installed tree. This project installs no package yet, so the audit runs after this install.';
     }
 }

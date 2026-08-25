@@ -18,7 +18,7 @@ final readonly class RequestUrl
 
     public static function default(): self
     {
-        return new self('porto (+https://github.com/nunomaduro/porto)', self::discoverGithubToken());
+        return new self('vet (+https://github.com/laravel/vet)', self::discoverGithubToken());
     }
 
     public function get(string $url): string
@@ -67,7 +67,7 @@ final readonly class RequestUrl
 
     private static function discoverGithubToken(): ?string
     {
-        foreach (['PORTO_GITHUB_TOKEN', 'GITHUB_TOKEN', 'GH_TOKEN'] as $variable) {
+        foreach (['VET_GITHUB_TOKEN', 'GITHUB_TOKEN', 'GH_TOKEN'] as $variable) {
             $value = getenv($variable);
 
             if (is_string($value) && $value !== '') {

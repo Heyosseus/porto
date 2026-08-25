@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Exceptions;
 
-final class FetchFailedException extends PortoException
+final class FetchFailedException extends VetException
 {
     public static function status(string $url, int $status, string $body = ''): self
     {

@@ -3,10 +3,10 @@
 declare(strict_types=1);
 
 use App\Enums\ComposerChangeType;
+use App\ValueObjects\ComposerPlan;
 use App\ValueObjects\InstalledRepository;
 use App\ValueObjects\LockFile;
 use App\ValueObjects\Project;
-use App\ValueObjects\ComposerPlan;
 use Tests\Fixture;
 use Tests\PendingUpdate;
 
@@ -60,7 +60,7 @@ it('drops the reference of a branch version', function (): void {
 });
 
 it('reads the operations that composer wrote to a plan file', function (): void {
-    $path = sys_get_temp_dir().'/porto-plan-'.bin2hex(random_bytes(6)).'.json';
+    $path = sys_get_temp_dir().'/vet-plan-'.bin2hex(random_bytes(6)).'.json';
 
     file_put_contents($path, json_encode(['operations' => [
         [

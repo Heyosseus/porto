@@ -93,7 +93,7 @@ it('names the incoming bytes that it cannot read, and blocks them', function ():
     expect($status)->toBe(1)
         ->and($output)
         ->toContain('bytes not readable')
-        ->toContain('porto cannot read those bytes')
+        ->toContain('vet cannot read those bytes')
         ->toContain('has no dist URL')
         ->and($trusted)->toBe(1)
         ->and($trustOutput)->toContain('acme/widget stays unrecorded');
