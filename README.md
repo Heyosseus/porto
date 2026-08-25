@@ -1,10 +1,4 @@
-<p align="center"><img src="/art/logo.svg" alt="Laravel Vet Logo"></p>
-
-<p align="center">
-<a href="https://packagist.org/packages/laravel/vet"><img src="https://img.shields.io/packagist/dt/laravel/vet" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/vet"><img src="https://img.shields.io/packagist/v/laravel/vet" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/vet"><img src="https://img.shields.io/packagist/l/laravel/vet" alt="License"></a>
-</p>
+# Laravel Vet
 
 <a name="introduction"></a>
 ## Introduction
